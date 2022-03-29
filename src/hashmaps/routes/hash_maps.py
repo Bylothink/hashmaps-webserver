@@ -17,7 +17,7 @@ def create_hash_map(name: str) -> Response:
 @app.route("/<name>", methods=['GET'])
 def read_hash_map(name: str) -> Response:
     if name not in HASH_MAPS:
-        abort(410)
+        abort(404)
 
     return jsonify(HASH_MAPS[name])
 
@@ -25,7 +25,7 @@ def read_hash_map(name: str) -> Response:
 def rename_hash_map(name: str) -> Response:
     value: str = request.get_data(as_text=True)
     if name not in HASH_MAPS:
-        abort(410)
+        abort(404)
 
     hash_map: Dict[str, str] = HASH_MAPS.pop(name)
     HASH_MAPS[value] = hash_map
@@ -35,7 +35,7 @@ def rename_hash_map(name: str) -> Response:
 @app.route("/<name>", methods=['DELETE'])
 def delete_hash_map(name: str) -> Response:
     if name not in HASH_MAPS:
-        abort(410)
+        abort(404)
 
     del HASH_MAPS[name]
 

@@ -9,7 +9,7 @@ from ..models import HASH_MAPS
 def create_hash_map_value(name: str, key: str) -> Response:
     value: str = request.get_data(as_text=True)
     if name not in HASH_MAPS:
-        abort(410)
+        abort(404)
 
     hash_map: Dict[str, str] = HASH_MAPS[name]
     if key in hash_map:
@@ -22,11 +22,11 @@ def create_hash_map_value(name: str, key: str) -> Response:
 @app.route("/<name>/<key>", methods=['GET'])
 def read_hash_map_value(name: str, key: str) -> Response:
     if name not in HASH_MAPS:
-        abort(410)
+        abort(404)
 
     hash_map: Dict[str, str] = HASH_MAPS[name]
     if key not in hash_map:
-        abort(410)
+        abort(404)
 
     return jsonify(hash_map[key])
 
@@ -34,11 +34,11 @@ def read_hash_map_value(name: str, key: str) -> Response:
 def update_hash_map_value(name: str, key: str) -> Response:
     value: str = request.get_data(as_text=True)
     if name not in HASH_MAPS:
-        abort(410)
+        abort(404)
 
     hash_map: Dict[str, str] = HASH_MAPS[name]
     if key not in hash_map:
-        abort(410)
+        abort(404)
 
     hash_map[key] = value
 
@@ -47,11 +47,11 @@ def update_hash_map_value(name: str, key: str) -> Response:
 @app.route("/<name>/<key>", methods=['DELETE'])
 def delete_hash_map_value(name: str, key: str) -> Response:
     if name not in HASH_MAPS:
-        abort(410)
+        abort(404)
 
     hash_map: Dict[str, str] = HASH_MAPS[name]
     if key not in hash_map:
-        abort(410)
+        abort(404)
 
     del hash_map[key]
 
