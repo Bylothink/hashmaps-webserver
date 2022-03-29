@@ -1,7 +1,7 @@
 import csv
 
 from io import StringIO
-from typing import Iterator, List, Tuple, Union
+from typing import Dict, Iterator, List, Tuple, Union
 
 
 class HashMap:

@@ -1,17 +1,16 @@
 from flask import Response, abort, jsonify, request
-from typing import Dict
 
 from ..app import app
-from ..models import HASH_MAPS
+from ..models import HASH_MAPS, HashMap
 
 
 @app.route("/<name>/<key>", methods=['POST'])
-def create_hash_map_value(name: str, key: str) -> Response:
+def create_hashmap_value(name: str, key: str) -> Response:
     value: str = request.get_data(as_text=True)
     if name not in HASH_MAPS:
         abort(404)
 
-    hash_map: Dict[str, str] = HASH_MAPS[name]
+    hash_map: HashMap = HASH_MAPS[name]
     if key in hash_map:
         abort(409)
 
@@ -20,23 +19,23 @@ def create_hash_map_value(name: str, key: str) -> Response:
     return jsonify(True)
 
 @app.route("/<name>/<key>", methods=['GET'])
-def read_hash_map_value(name: str, key: str) -> Response:
+def read_hashmap_value(name: str, key: str) -> Response:
     if name not in HASH_MAPS:
         abort(404)
 
-    hash_map: Dict[str, str] = HASH_MAPS[name]
+    hash_map: HashMap = HASH_MAPS[name]
     if key not in hash_map:
         abort(404)
 
     return jsonify(hash_map[key])
 
 @app.route("/<name>/<key>", methods=['PUT'])
-def update_hash_map_value(name: str, key: str) -> Response:
+def update_hashmap_value(name: str, key: str) -> Response:
     value: str = request.get_data(as_text=True)
     if name not in HASH_MAPS:
         abort(404)
 
-    hash_map: Dict[str, str] = HASH_MAPS[name]
+    hash_map: HashMap = HASH_MAPS[name]
     if key not in hash_map:
         abort(404)
 
@@ -45,11 +44,11 @@ def update_hash_map_value(name: str, key: str) -> Response:
     return jsonify(True)
 
 @app.route("/<name>/<key>", methods=['DELETE'])
-def delete_hash_map_value(name: str, key: str) -> Response:
+def delete_hashmap_value(name: str, key: str) -> Response:
     if name not in HASH_MAPS:
         abort(404)
 
-    hash_map: Dict[str, str] = HASH_MAPS[name]
+    hash_map: HashMap = HASH_MAPS[name]
     if key not in hash_map:
         abort(404)
 

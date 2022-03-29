@@ -29,7 +29,7 @@ class Collection(HashMap):
     def values(self) -> Iterator[HashMap]:
         return super().values()
 
-    def load_from_file(self, file: TextIOWrapper) -> None:
+    def from_csv(self, csv_string: str) -> None:
         raise NotImplementedError("I haven't thought about this yet.")
 
     def to_csv(self, file: TextIOWrapper) -> None:
