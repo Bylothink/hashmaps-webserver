@@ -1,2 +1,2 @@
-from . import hash_maps
-from . import hash_maps_values
+from . import hashmaps
+from . import key_values
