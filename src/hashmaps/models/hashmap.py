@@ -61,7 +61,6 @@ class HashMap:
         """
 
         reader = csv.reader(file)
-
         for key, value in reader:
             self[key] = value
 
@@ -77,9 +76,7 @@ class HashMap:
         """
 
         writer = csv.writer(file)
-
-        for item in self.items():
-            writer.writerow(item)
+        writer.writerows(self.items())
 
     def clear(self) -> None:
         self._initialize_map()
