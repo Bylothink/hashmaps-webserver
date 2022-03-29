@@ -1,6 +1,6 @@
 import csv
 
-from io import TextIOWrapper
+from io import StringIO
 from typing import Iterator, List, Tuple, Union
 
 
@@ -50,33 +50,47 @@ class HashMap:
         for item in self.items():
             yield item[1]
 
-    def load_from_file(self, file: TextIOWrapper) -> None:
+    def from_csv(self, csv_string: str) -> None:
         """
-        Loads the key-value pairs from a CSV file into the hash map.
+        Loads the key-value pairs from a CSV format string into the hash map.
 
         Example:
             >>> hash_map = HashMap(16)
-            >>> with open("dump.csv", "r") as file:
-            >>>     hash_map.load_from_file(file)
+            >>> hash_map.from_csv('a,1\\nb,2\\nc,3\\n')
+            >>> hash_map
+            HashMap(16): {'a': '1', 'b': '2', 'c': '3'}
+            >>> hash_map.from_csv('d,4\\nb,5\\n')
+            >>> hash_map
+            HashMap(16): {'a': '1', 'b': '5', 'c': '3', 'd': '4'}
         """
 
-        reader = csv.reader(file)
+        str_io: StringIO = StringIO(csv_string)
+
+        reader = csv.reader(str_io)
         for key, value in reader:
             self[key] = value
 
-    def dump_to_file(self, file: TextIOWrapper) -> None:
+    def to_csv(self) -> str:
         """
-        Dumps the key-value pairs from the hash map into a CSV file.
+        Returns the key-value pairs from the hash map into a CSV format string.
 
         Example:
             >>> hash_map = HashMap(16)
-            >>> [...]
-            >>> with open("dump.csv", "w") as file:
-            >>>     hash_map.dump_to_file(file)
+            >>> hash_map['a'] = '1'
+            >>> hash_map['b'] = '2'
+            >>> hash_map['c'] = '3'
+            >>> hash_map
+            HashMap(16): {'a': '1', 'b': '2', 'c': '3'}
+            >>> hash_map.to_csv()
+            'a,1\\nb,2\\nc,3\\n'
         """
 
-        writer = csv.writer(file)
+        str_io: StringIO = StringIO()
+
+        writer = csv.writer(str_io)
         writer.writerows(self.items())
+
+        return str_io.getvalue()
 
     def clear(self) -> None:
         self._initialize_map()
@@ -159,12 +173,4 @@ class HashMap:
         return f"{{{', '.join(values)}}}"
 
     def __repr__(self) -> str:
-        value: str = f"HashMap({self._size}):\n"
-
-        for index, bucket in enumerate(self._map):
-            if bucket:
-                value += f"  {index}:\n"
-                for item in bucket:
-                    value += f"    {repr(item)}\n"
-
-        return value
+        return f"HashMap({self._size}): {self}"
