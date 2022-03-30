@@ -3,6 +3,8 @@ import csv
 from io import StringIO
 from typing import Iterator, List, Tuple, Union
 
+DEFAULT_HASH_MAP_SIZE: int = 64
+
 
 class HashMap:
     _size: int = None
@@ -15,6 +17,9 @@ class HashMap:
         return self._size
 
     def __init__(self, size: int):
+        if size < 1:
+            raise ValueError("Size must be greater than 0")
+
         self._size = size
         self._initialize_map()
 

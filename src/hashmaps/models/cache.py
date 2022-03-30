@@ -2,6 +2,8 @@ from typing import Iterator, List, Tuple, Union
 
 from .collection import Collection
 
+DEFAULT_CACHE_SIZE: int = 8
+
 
 class QueueCache():
     _size: int = None
@@ -13,6 +15,9 @@ class QueueCache():
         return self._size
 
     def __init__(self, size: int):
+        if size < 1:
+            raise ValueError("Size must be greater than 0")
+
         self._size = size
         self._initialize_queue()
 
@@ -81,6 +86,24 @@ class QueueCache():
                 return
 
         raise KeyError(key)
+
+    def __bool__(self) -> bool:
+        return bool(self._queue)
+
+    def __len__(self) -> int:
+        return len(self._queue)
+
+    def __iter__(self) -> Iterator[str]:
+        return self.values()
+
+    def __contains__(self, key: str) -> bool:
+        try:
+            self[key]
+
+        except KeyError:
+            return False
+
+        return True
 
     def __str__(self) -> str:
         values: List[str] = []

@@ -1,6 +1,11 @@
+import csv
+
+from io import StringIO
 from typing import Iterator, List, Tuple, Union
 
-from .hashmap import HashMap
+from .hashmap import DEFAULT_HASH_MAP_SIZE, HashMap
+
+DEFAULT_COLLECTION_SIZE: int = 16
 
 
 class Collection(HashMap):
@@ -31,10 +36,29 @@ class Collection(HashMap):
         return super().values()
 
     def from_csv(self, csv_string: str) -> None:
-        raise NotImplementedError("I haven't thought about this yet.")
+        str_io: StringIO = StringIO(csv_string)
+
+        reader = csv.reader(str_io)
+        for name, key, value in reader:
+            hash_map = self.get(name, HashMap(DEFAULT_HASH_MAP_SIZE))
+
+            if key != '':
+                hash_map[key] = value
 
     def to_csv(self) -> None:
-        raise NotImplementedError("I haven't thought about this yet.")
+        str_io: StringIO = StringIO()
+
+        writer = csv.writer(str_io)
+        for name, hash_map in self.items():
+            if not hash_map:
+                writer.writerow([name, None, None])
+
+                continue
+
+            for key, value in hash_map.items():
+                writer.writerow([name, key, value])
+
+        return str_io.getvalue()
 
     def __getitem__(self, key: str) -> HashMap:
         return super().__getitem__(key)
