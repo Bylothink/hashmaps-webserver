@@ -42,7 +42,7 @@ class HashMap:
 
     def items(self) -> Iterator[Tuple[str, str]]:
         for bucket in self._map:
-            if bucket:
+            if bucket is not None:
                 for item in bucket:
                     yield item
 
@@ -99,7 +99,7 @@ class HashMap:
         hashed_key: int = hash(key) % self._size
         bucket: List[Tuple[str, str]] = self._map[hashed_key]
 
-        if not bucket:
+        if bucket is None:
             raise KeyError(key)
 
         for item in bucket:
@@ -112,7 +112,7 @@ class HashMap:
         hashed_key: int = hash(key) % self._size
         bucket: List[Tuple[str, str]] = self._map[hashed_key]
 
-        if not bucket:
+        if bucket is None:
             self._map[hashed_key] = [(key, value)]
             self._length += 1
 
@@ -131,7 +131,7 @@ class HashMap:
         hashed_key: int = hash(key) % self._size
         bucket: List[Tuple[str, str]] = self._map[hashed_key]
 
-        if not bucket:
+        if bucket is None:
             raise KeyError(key)
 
         for index, item in enumerate(bucket):
@@ -139,7 +139,7 @@ class HashMap:
                 del bucket[index]
                 self._length -= 1
 
-                if not bucket:
+                if len(bucket) == 0:
                     self._map[hashed_key] = None
 
                 return

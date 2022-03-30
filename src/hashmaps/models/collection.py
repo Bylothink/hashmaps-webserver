@@ -13,7 +13,7 @@ class Collection(HashMap):
             return self[key]
 
         except KeyError:
-            if default:
+            if default is not None:
                 self[key] = default
 
             return default
