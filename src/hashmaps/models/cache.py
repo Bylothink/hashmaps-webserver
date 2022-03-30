@@ -6,6 +6,24 @@ DEFAULT_CACHE_SIZE: int = 8
 
 
 class QueueCache():
+    """
+    `QueueCache` is an implementation of a rotating
+    cache that keeps in memory only the last `size` items.
+
+    Each time a key is accessed, both for reading and writing,
+    the item is moved to the first position in the list,
+    shifting all the other items forward by one position.
+    This keeps the most recently accessed items at the beginning
+    of the list, making it faster to access them again.
+
+    When the cache is full and you try to add a new item,
+    the oldest accessed item is removed from the
+    list leaving the place for the newer ones.
+
+    For this reason, this data structure is not suitable
+    for persistent storage, but it is very fast to access.
+    """
+
     _size: int = None
 
     _queue: List[Tuple[str, Collection]] = None

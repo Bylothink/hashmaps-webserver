@@ -57,7 +57,8 @@ To do so, you need to create a `.env` file in the project folder like the follow
 SECRET_KEY=<32_chars_random_string>
 ```
 
-> *This `SECRET_KEY` value will be the secret you need to use to generate your `JWT token` used for the user authentication.*
+> *This `SECRET_KEY` value will be the secret you need to use to*
+> *generate your `JWT token` used for the user authentication.*
 
 ### `JWT token`
 
@@ -147,3 +148,14 @@ The web server provide the following endpoints:
     It fails if `<key>` doesn't exist yet.
     - **DELETE**: removes the value for `<key>` stored within the `<name>` hashmap.  
     Ignores the request payload.
+
+#### **N.B.:**
+> The request payload is read as `text/plain`.  
+> No `application/x-www-form-urlencoded`, `application/json` or `multipart/form-data` are currently supported.
+
+## Personal notes
+
+- If you choose to use `Docker` it will be much faster & easier to get the project up & running.
+- I've chosen to use as little as possible the built-in `dict` data structure to make it more "challenging".  
+Sadly, in some cases, I preferred to use `dict`, thus avoiding rewriting the entire JSON parser. 😅
+- It isn't thread-safe yet, so you should use it **ONLY** in a single-threaded environment.

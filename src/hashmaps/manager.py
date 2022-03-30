@@ -9,6 +9,21 @@ DEFAULT_ENCODING: str = 'utf-8'
 
 
 class CollectionManager:
+    """
+    `CollectionManager` allows you to persist collections
+    consistently on disk while using a fast layer of caching.
+
+    It use the `QueueCache` data structure.
+
+    Each time a key is accessed, it attempts
+    to retrieve the item from the cache.
+    If it's not available, it tries to load it from the disk
+    while also creating the relative key in the cache.
+
+    Once an item has been modified, it saves it to the disk
+    while also keeping it in the cache for quick future access.
+    """
+
     _username: str = None
 
     _collection: Collection = None
