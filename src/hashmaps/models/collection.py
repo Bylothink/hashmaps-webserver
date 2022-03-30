@@ -1,7 +1,7 @@
 import csv
 
 from io import StringIO
-from typing import Iterator, List, Tuple, Union
+from typing import Dict, Iterator, List, Tuple, Union
 
 from .hashmap import DEFAULT_HASH_MAP_SIZE, HashMap
 
@@ -59,6 +59,9 @@ class Collection(HashMap):
                 writer.writerow([name, key, value])
 
         return str_io.getvalue()
+
+    def to_dict(self) -> Dict[str, Dict[str, str]]:
+        return {name: item.to_dict() for name, item in self.items()}
 
     def __getitem__(self, key: str) -> HashMap:
         return super().__getitem__(key)

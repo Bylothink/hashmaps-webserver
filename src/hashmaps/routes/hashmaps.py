@@ -7,6 +7,15 @@ from ..manager import CollectionManager
 from ..models import DEFAULT_HASH_MAP_SIZE, HashMap
 
 
+@app.route('/', methods=['GET'])
+@jwt.authenticate
+@stats.log
+def read_all_hashmaps(info: Context) -> Response:
+    collection = CollectionManager(info.username).get()
+
+    return jsonify(collection.to_dict())
+
+
 @app.route('/<name>', methods=['POST'])
 @jwt.authenticate
 @stats.log
@@ -27,7 +36,7 @@ def read_hashmap(info: Context, name: str) -> Response:
     if name not in collection:
         abort(404)
 
-    return jsonify(dict(collection[name].items()))
+    return jsonify(collection[name].to_dict())
 
 @app.route('/<name>', methods=['PUT'])
 @jwt.authenticate

@@ -3,7 +3,7 @@ import logging
 from os import path
 from typing import Any, Callable
 
-from flask import Response, request
+from flask import Request, Response, request
 from werkzeug.exceptions import HTTPException
 
 from ..auth.context import Context
@@ -26,30 +26,26 @@ _logger.addHandler(file_handler)
 
 
 def log(funct: AuthRouteFunct) -> AuthRouteFunct:
+    def _log(request: Request, info: Context, response: Response) -> None:
+        _logger.info(
+            f"Status code: {response.status_code}"
+            f" - User: {repr(info.username)}"
+            f" - Resource: '{request.path}'"
+            f" - Action: '{request.method}'"
+        )
+
     def _funct_wrapper(info: Context, *args, **kwargs) -> Response:
         try:
             response = funct(info, *args, **kwargs)
-            status_code = response.status_code
+
+            _log(request, info, response)
 
             return response
 
         except HTTPException as exc:
-            if exc.response:
-                response = exc.response
-                status_code = response.status_code
-            
-            else:
-                status_code = exc.code
+            _log(request, info, exc.response)
 
             raise
-
-        finally:
-            _logger.info(
-                f"Status code: {status_code}"
-                f" - User: {repr(info.username)}"
-                f" - Resource: '{request.path}'"
-                f" - Action: '{request.method}'"
-            )
 
     # SMELLS: This fix a problem that Flask has with decorated routes.
     #         See https://stackoverflow.com/questions/17256602/

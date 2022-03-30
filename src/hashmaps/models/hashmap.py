@@ -1,7 +1,7 @@
 import csv
 
 from io import StringIO
-from typing import Iterator, List, Tuple, Union
+from typing import Dict, Iterator, List, Tuple, Union
 
 DEFAULT_HASH_MAP_SIZE: int = 64
 
@@ -96,6 +96,9 @@ class HashMap:
         writer.writerows(self.items())
 
         return str_io.getvalue()
+
+    def to_dict(self) -> Dict[str, str]:
+        return dict(self.items())
 
     def clear(self) -> None:
         self._initialize_map()
