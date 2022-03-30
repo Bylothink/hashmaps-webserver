@@ -30,7 +30,7 @@ Make sure you have `Python`, `pip`, and `Pipenv` installed on your machine.
 Once done, navigate to your project folder and type the following command:
 
 ```sh
-pipenv install
+pipenv install --dev --three
 ```
 
 > *This will install all the dependencies required from this project to run properly.*
@@ -45,6 +45,17 @@ docker-compose build
 ```
 
 > *This will build the `Docker` image which will later be used to run the project.*
+
+## Configuration
+
+Before starting the server, you need to configure it.
+
+To do so, you need to create a `.env` file in the project folder like the following:
+```
+SECRET_KEY=<32_chars_random_string>
+```
+
+> *This `SECRET_KEY` value will be the secret you need to use to generate your `JWT` token.*
 
 ## Starting the server
 
@@ -76,3 +87,8 @@ docker-compose up
 Now the web server is running and you can access it at the following URL:
 
 - **[localhost:8000](http://localhost:8000/)**
+
+### Authentication
+
+All you have to do now is to append to your requests the `Authorization` header
+valued with the `JWT` token you you previously generated using the `SECRET_KET`.
