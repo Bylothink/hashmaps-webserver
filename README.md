@@ -50,12 +50,39 @@ docker-compose build
 
 Before starting the server, you need to configure it.
 
+### `.env` file
+
 To do so, you need to create a `.env` file in the project folder like the following:
 ```
 SECRET_KEY=<32_chars_random_string>
 ```
 
-> *This `SECRET_KEY` value will be the secret you need to use to generate your `JWT` token.*
+> *This `SECRET_KEY` value will be the secret you need to use to generate your `JWT token` used for the user authentication.*
+
+### `JWT token`
+
+As just mentioned, the `JWT token` is used to authenticate the user.  
+For this reason, you need to create your own `JWT token` if you want to use this service.
+
+Visit the following URL: **[jwt.io](https://jwt.io/)**  
+We will work on the right side of the page, the "**Decoded**" section.
+
+Paste the same `SECRET_KEY` you just wrote inside the `.env`
+into the input box that shows "`your-256-bit-secret`".  
+Next, edit the "**PAYLOAD**" section by replacing the content with the following:
+
+```json
+{ "username": "<choose-the-username-you-want-to-use>" }
+```
+
+> *Choose your favourite username or change it with some others if you want to try the multi-user experience.*
+
+Now you can save the newly generated `JWT token`, shown on the left side of the screen, under the "**Encoded**" section.  
+It should look almost like...
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
 
 ## Starting the server
 
@@ -67,6 +94,10 @@ Type the following command:
 pipenv shell
 
 cd src/
+
+mkdir -p .volume/collections \
+         .volume/logs
+
 python3 run.py
 ```
 
@@ -91,4 +122,28 @@ Now the web server is running and you can access it at the following URL:
 ### Authentication
 
 All you have to do now is to append to your requests the `Authorization` header
-valued with the `JWT` token you you previously generated using the `SECRET_KET`.
+valued with the `JWT token` you previously generated using the `SECRET_KET`.
+
+### Requests
+
+The web server provide the following endpoints:
+
+- **`/`**
+    - **GET**: returns the entire collection of hashmaps of the authenticated user.
+- **`/<name>`**
+    - **GET**: returns the `<name>` hashmap with all the stored key-value pairs.
+    - **POST**: creates the `<name>` hashmap if it doesn't exist yet.  
+    Ignores the request payload.
+    - **PUT**: renames the `<name>` hashmap using the value present in the request payload.
+    - **DELETE**: removes the `<name>` hashmap if it already exists.  
+    Ignores the request payload.
+- **`/<name>/<key>`**
+    - **GET**: returns the value for `<key>` stored within the `<name>` hashmap.
+    - **POST**: creates and sets the value for `<key>` stored within the
+    `<name>` hashmap using the value present in the request payload.  
+    It fails if `<key>` already exists.
+    - **PUT**: replaces the value for `<key>` stored within the
+    `<name>` hashmap using the value present in the request payload.  
+    It fails if `<key>` doesn't exist yet.
+    - **DELETE**: removes the value for `<key>` stored within the `<name>` hashmap.  
+    Ignores the request payload.
