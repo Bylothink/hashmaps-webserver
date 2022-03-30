@@ -1,9 +1,10 @@
-from os import path
+import os
 
 from .app import __CACHE__
 from .models.collection import DEFAULT_COLLECTION_SIZE, Collection
 
-COLLECTIONS_PATH: str = '.volume/collections'
+DATA_VOLUME: str = os.environ.get('DATA_VOLUME', '.volume')
+COLLECTIONS_PATH: str = f'{DATA_VOLUME}/collections'
 DEFAULT_ENCODING: str = 'utf-8'
 
 
@@ -30,8 +31,8 @@ class CollectionManager:
 
     def load(self) -> Collection:
         self._collection = Collection(DEFAULT_COLLECTION_SIZE)
-        filepath = path.join(COLLECTIONS_PATH, f'{self._username}.csv')
-        if path.isfile(filepath):
+        filepath = os.path.join(COLLECTIONS_PATH, f'{self._username}.csv')
+        if os.path.isfile(filepath):
             with open(filepath, mode='r', encoding=DEFAULT_ENCODING) as file:
                 self._collection.from_csv(file.read())
 
@@ -43,7 +44,7 @@ class CollectionManager:
         if self._collection is None:
             raise RuntimeError("Collection was not loaded properly")
 
-        filepath = path.join(COLLECTIONS_PATH, f'{self._username}.csv')
+        filepath = os.path.join(COLLECTIONS_PATH, f'{self._username}.csv')
         with open(filepath, mode='w', encoding=DEFAULT_ENCODING) as file:
             file.write(self._collection.to_csv())
 

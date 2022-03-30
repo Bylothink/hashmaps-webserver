@@ -26,6 +26,20 @@ __pycache__/
 *.csv
 *.log
 
-# Not ignored
+# GIT files
 #
-!.gitkeep
+/.git/
+
+.gitignore
+
+# Docker & build files
+#
+/.dockerignore
+/Dockerfile
+/docker-compose.yml
+
+# Useless project files
+#
+/.editorconfig
+/LICENSE
+/README.md

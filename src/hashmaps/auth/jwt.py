@@ -1,3 +1,5 @@
+import os
+
 from typing import Any, Callable, Dict
 
 import jwt
@@ -10,7 +12,11 @@ from .context import Context
 RouteFunct = Callable[[Any, Any], Response]
 AuthRouteFunct = Callable[[Context, Any, Any], Response]
 
-JWT_SECRET = 'just-not-a-very-secure-secretkey'
+try:
+    JWT_SECRET = os.environ['SECRET_KEY']
+
+except KeyError:
+    raise RuntimeError("SECRET_KEY environment variable is not set")
 
 
 def authenticate(funct: AuthRouteFunct) -> RouteFunct:

@@ -1,6 +1,6 @@
 import logging
+import os
 
-from os import path
 from typing import Any, Callable
 
 from flask import Response, request
@@ -10,7 +10,8 @@ from ..auth.context import Context
 
 AuthRouteFunct = Callable[[Context, Any, Any], Response]
 
-LOGS_PATH: str = '.volume/logs'
+DATA_VOLUME: str = os.environ.get('DATA_VOLUME', '.volume')
+LOGS_PATH: str = f'{DATA_VOLUME}/logs'
 
 
 _logger = logging.getLogger(__name__)
@@ -18,7 +19,7 @@ _logger.setLevel(logging.INFO)
 
 formatter = logging.Formatter('[%(asctime)s] %(message)s.')
 
-file_handler = logging.FileHandler(path.join(LOGS_PATH, 'stats.log'))
+file_handler = logging.FileHandler(os.path.join(LOGS_PATH, 'stats.log'))
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 

@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  webserver:
+    build: .
+    image: hashmaps/backend:latest
+
+    env_file:
+      - .env
+
+    networks:
+      - default
+
+    ports:
+      - 8000:8000
+
+    volumes:
+      - webserver_data:/var/lib/hashmaps
+      - ./src:/opt/hashmaps
+
+networks:
+  default:
+
+volumes:
+  webserver_data:
