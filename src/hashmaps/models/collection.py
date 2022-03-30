@@ -1,10 +1,11 @@
-from io import TextIOWrapper
 from typing import Iterator, List, Tuple, Union
 
 from .hashmap import HashMap
 
 
 class Collection(HashMap):
+    # pylint: disable=useless-super-delegation
+
     _map: List[List[Tuple[str, HashMap]]] = None
 
     def get(self, key: str, default: HashMap = None) -> Union[HashMap, None]:
@@ -32,7 +33,7 @@ class Collection(HashMap):
     def from_csv(self, csv_string: str) -> None:
         raise NotImplementedError("I haven't thought about this yet.")
 
-    def to_csv(self, file: TextIOWrapper) -> None:
+    def to_csv(self) -> None:
         raise NotImplementedError("I haven't thought about this yet.")
 
     def __getitem__(self, key: str) -> HashMap:
