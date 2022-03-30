@@ -3,7 +3,7 @@ import logging
 from os import path
 from typing import Any, Callable
 
-from flask import Request, Response, request
+from flask import Response, request
 from werkzeug.exceptions import HTTPException
 
 from ..auth.context import Context
@@ -26,24 +26,30 @@ _logger.addHandler(file_handler)
 
 
 def log(funct: AuthRouteFunct) -> AuthRouteFunct:
-    def _log(request: Request, info: Context, response: Response) -> None:
-        _logger.info(
-            f"Status code: {response.status_code}"
-            f" - User: {repr(info.username)}"
-            f" - Resource: '{request.path}'"
-            f" - Action: '{request.method}'"
+    def _log(info: Context, status_code: int) -> None:
+        _logger.info("Status code: %s  - User: %s - Resource: '%s' - Action: '%s'",
+            status_code,
+            repr(info.username),
+            request.path,
+            request.method
         )
 
     def _funct_wrapper(info: Context, *args, **kwargs) -> Response:
         try:
             response = funct(info, *args, **kwargs)
 
-            _log(request, info, response)
+            _log(info, response.status_code)
 
             return response
 
         except HTTPException as exc:
-            _log(request, info, exc.response)
+            if exc.response:
+                status_code = exc.response.status_code
+
+            else:
+                status_code = exc.code
+
+            _log(info, status_code)
 
             raise
 
