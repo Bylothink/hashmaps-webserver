@@ -3,7 +3,8 @@ from os import path
 from .app import __CACHE__
 from .models.collection import DEFAULT_COLLECTION_SIZE, Collection
 
-COLLECTIONS_PATH: str = '.collections'
+COLLECTIONS_PATH: str = '.volume/collections'
+DEFAULT_ENCODING: str = 'utf-8'
 
 
 class CollectionManager:
@@ -31,7 +32,7 @@ class CollectionManager:
         self._collection = Collection(DEFAULT_COLLECTION_SIZE)
         filepath = path.join(COLLECTIONS_PATH, f'{self._username}.csv')
         if path.isfile(filepath):
-            with open(filepath, 'r') as file:
+            with open(filepath, mode='r', encoding=DEFAULT_ENCODING) as file:
                 self._collection.from_csv(file.read())
 
         __CACHE__[self._username] = self._collection
@@ -43,12 +44,12 @@ class CollectionManager:
             raise RuntimeError("Collection was not loaded properly")
 
         filepath = path.join(COLLECTIONS_PATH, f'{self._username}.csv')
-        with open(filepath, 'w') as file:
+        with open(filepath, mode='w', encoding=DEFAULT_ENCODING) as file:
             file.write(self._collection.to_csv())
 
     def __enter__(self) -> Collection:
         return self.get()
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         if exc_type is None:
             self.save()

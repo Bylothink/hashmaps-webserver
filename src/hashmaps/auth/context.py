@@ -10,3 +10,9 @@ class Context:
 
     def __init__(self, payload: Dict[str, Any]):
         self._username = payload['username']
+
+    def __str__(self) -> str:
+        return f"{{'username': {repr(self._username)}}}"
+
+    def __repr__(self) -> str:
+        return f"Context: {self}"

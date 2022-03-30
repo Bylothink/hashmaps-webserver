@@ -2,12 +2,14 @@ from flask import Response, abort, jsonify, request
 
 from ..app import app
 from ..auth import jwt, Context
+from ..logging import stats
 from ..manager import CollectionManager
 from ..models import DEFAULT_HASH_MAP_SIZE, HashMap
 
 
 @app.route('/<name>', methods=['POST'])
 @jwt.authenticate
+@stats.log
 def create_hashmap(info: Context, name: str) -> Response:
     with CollectionManager(info.username) as collection:
         if name in collection:
@@ -19,6 +21,7 @@ def create_hashmap(info: Context, name: str) -> Response:
 
 @app.route('/<name>', methods=['GET'])
 @jwt.authenticate
+@stats.log
 def read_hashmap(info: Context, name: str) -> Response:
     collection = CollectionManager(info.username).get()
     if name not in collection:
@@ -28,6 +31,7 @@ def read_hashmap(info: Context, name: str) -> Response:
 
 @app.route('/<name>', methods=['PUT'])
 @jwt.authenticate
+@stats.log
 def rename_hashmap(info: Context, name: str) -> Response:
     with CollectionManager(info.username) as collection:
         if name not in collection:
@@ -44,6 +48,7 @@ def rename_hashmap(info: Context, name: str) -> Response:
 
 @app.route('/<name>', methods=['DELETE'])
 @jwt.authenticate
+@stats.log
 def delete_hashmap(info: Context, name: str) -> Response:
     with CollectionManager(info.username) as collection:
         if name not in collection:

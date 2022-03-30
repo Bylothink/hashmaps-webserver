@@ -2,12 +2,14 @@ from flask import Response, abort, jsonify, request
 
 from ..app import app
 from ..auth import jwt, Context
+from ..logging import stats
 from ..manager import CollectionManager
 from ..models import HashMap
 
 
 @app.route('/<name>/<key>', methods=['POST'])
 @jwt.authenticate
+@stats.log
 def create_hashmap_value(info: Context, name: str, key: str) -> Response:
     with CollectionManager(info.username) as collection:
         value: str = request.get_data(as_text=True)
@@ -24,6 +26,7 @@ def create_hashmap_value(info: Context, name: str, key: str) -> Response:
 
 @app.route('/<name>/<key>', methods=['GET'])
 @jwt.authenticate
+@stats.log
 def read_hashmap_value(info: Context, name: str, key: str) -> Response:
     collection = CollectionManager(info.username).get()
     if name not in collection:
@@ -37,6 +40,7 @@ def read_hashmap_value(info: Context, name: str, key: str) -> Response:
 
 @app.route('/<name>/<key>', methods=['PUT'])
 @jwt.authenticate
+@stats.log
 def update_hashmap_value(info: Context, name: str, key: str) -> Response:
     with CollectionManager(info.username) as collection:
         value: str = request.get_data(as_text=True)
@@ -53,6 +57,7 @@ def update_hashmap_value(info: Context, name: str, key: str) -> Response:
 
 @app.route('/<name>/<key>', methods=['DELETE'])
 @jwt.authenticate
+@stats.log
 def delete_hashmap_value(info: Context, name: str, key: str) -> Response:
     with CollectionManager(info.username) as collection:
         if name not in collection:
