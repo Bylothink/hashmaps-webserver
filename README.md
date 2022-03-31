@@ -157,5 +157,9 @@ The web server provide the following endpoints:
 
 - If you choose to use `Docker` it will be much faster & easier to get the project up & running.
 - I've chosen to use as little as possible the built-in `dict` data structure to make it more "challenging".  
-Sadly, in some cases, I preferred to use `dict`, thus avoiding rewriting the entire JSON parser. 😅
+Sadly, in some cases, I preferred to use `dict`, thus avoiding rewriting the entire JSON parser. 😅  
+Where was possible, instead of using JSON, I used CSV format to avoid using `dict`.
 - It isn't thread-safe yet, so you should use it **ONLY** in a single-threaded environment.
+- Right now, due to using an username slug to handle the collections,
+it might happen that two different usernames (with some weird
+and usually not allowed characters) collide to the same slug. I know.

@@ -1,5 +1,7 @@
 import os
 
+from slugify import slugify
+
 from .app import __CACHE__
 from .models.collection import DEFAULT_COLLECTION_SIZE, Collection
 
@@ -24,48 +26,47 @@ class CollectionManager:
     while also keeping it in the cache for quick future access.
     """
 
-    _username: str = None
-
+    _slug: str = None
     _collection: Collection = None
 
-    @property
-    def username(self) -> str:
-        return self._username
-
     def __init__(self, username):
-        self._username = username
+        self._slug = slugify(username)
 
     def get(self) -> Collection:
         try:
-            self._collection = __CACHE__[self._username]
+            collection = __CACHE__[self._slug]
 
         except KeyError:
-            self.load()
+            collection = self.load()
 
-        return self._collection
+        return collection
 
     def load(self) -> Collection:
-        self._collection = Collection(DEFAULT_COLLECTION_SIZE)
-        filepath = os.path.join(COLLECTIONS_PATH, f'{self._username}.csv')
+        collection = Collection(DEFAULT_COLLECTION_SIZE)
+        filepath = os.path.join(COLLECTIONS_PATH, f'{self._slug}.csv')
         if os.path.isfile(filepath):
             with open(filepath, mode='r', encoding=DEFAULT_ENCODING) as file:
-                self._collection.from_csv(file.read())
+                collection.from_csv(file.read())
 
-        __CACHE__[self._username] = self._collection
+        __CACHE__[self._slug] = collection
 
-        return self._collection
+        return collection
 
-    def save(self) -> None:
-        if self._collection is None:
-            raise RuntimeError("Collection was not loaded properly")
-
-        filepath = os.path.join(COLLECTIONS_PATH, f'{self._username}.csv')
+    def save(self, collection: Collection) -> None:
+        filepath = os.path.join(COLLECTIONS_PATH, f'{self._slug}.csv')
         with open(filepath, mode='w', encoding=DEFAULT_ENCODING) as file:
-            file.write(self._collection.to_csv())
+            file.write(collection.to_csv())
 
     def __enter__(self) -> Collection:
-        return self.get()
+        self._collection = self.get()
+
+        return self._collection
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         if exc_type is None:
-            self.save()
+            if self._collection is None:
+                raise RuntimeError("Collection is not defined. Are you using nested `with` statements?")
+
+            self.save(self._collection)
+
+        self._collection = None
