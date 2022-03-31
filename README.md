@@ -60,6 +60,14 @@ SECRET_KEY=<32_chars_random_string>
 > *This `SECRET_KEY` value will be the secret you need to use to*
 > *generate your `JWT token` used for the user authentication.*
 
+#### **N.B.:**
+> If you're having some kind of problem related to the `SECRET_KEY`
+>  environmental variable, you can also force the export in your console as below:
+>  
+> ```sh
+> export SECRET_KEY=<32_chars_random_string>
+> ```
+
 ### `JWT token`
 
 As just mentioned, the `JWT token` is used to authenticate the user.  
