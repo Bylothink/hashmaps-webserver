@@ -47,4 +47,7 @@ def json_response(data: Dict[str, Any] = None,
     elif error is not None:
         json_obj['errors'] = [error.to_dict()]
 
-    return Response(json.dumps(json_obj), status=status_code, mimetype="application/json")
+    return Response(json.dumps(json_obj),
+                    status=status_code,
+                    headers={'Access-Control-Allow-Origin': '*'},
+                    mimetype="application/json")

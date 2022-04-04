@@ -18,7 +18,6 @@ def read_all_hashmaps(info: Context) -> Response:
 
     return json_response(collection.to_dict())
 
-
 @app.route('/<name>', methods=['POST'])
 @jwt.authenticate
 @stats.log
